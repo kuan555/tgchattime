@@ -39,5 +39,4 @@ jobs:
       - name: Open chat (run bot.py open)
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          name: Show config run: cat config.json
-        run: python bot.py open
+          run: python bot.py open
