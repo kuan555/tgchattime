@@ -1,0 +1,42 @@
+name: Telegram Chat Open/Close Scheduler (Astana UTC+5)
+
+on:
+  schedule:
+    # Open at 07:00 Astana (01:00 UTC)
+    - cron: '0 2 * * *'
+    # Close at 23:35 Astana (18:35 UTC)
+    - cron: '0 18 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  close_chat:
+    if: github.event_name == 'schedule' && github.event.schedule == '0 18 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Close chat (run bot.py close)
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python bot.py close
+
+  open_chat:
+    if: github.event_name == 'schedule' && github.event.schedule == '0 2 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Open chat (run bot.py open)
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python bot.py open
